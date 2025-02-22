@@ -1,4 +1,5 @@
 import http from 'node:http'
+import * as DID from '@ipld/dag-ucan/did'
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
@@ -12,6 +13,9 @@ const server = http.createServer(async (req, res) => {
       res.statusCode = 400
       return res.end()
     }
+
+    const agent = DID.parse(url.searchParams.get('state')).did()
+    console.log(`Agent: ${agent}`)
 
     const params = new FormData()
     params.set('client_id', GITHUB_CLIENT_ID)
