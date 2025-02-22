@@ -27,7 +27,7 @@ const server = http.createServer(async (req, res) => {
       res.statusCode = 400
       return res.end()
     }
-    const { access_token: accessToken } = await res.json()
+    const { access_token: accessToken } = await accessTokenRes.json()
 
     const userRes = await fetch('https://api.github.com/user', {
       headers: {
