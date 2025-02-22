@@ -41,6 +41,19 @@ const server = http.createServer(async (req, res) => {
       return res.end()
     }
     console.log(await userRes.json())
+
+    const userEmailsRes = await fetch('https://api.github.com/user/emails', {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${accessToken}`,
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    })
+    if (!userEmailsRes.ok) {
+      res.statusCode = 500
+      return res.end()
+    }
+    console.log(await userEmailsRes.json())
   }
   res.end()
 })
