@@ -11,8 +11,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@magic-ext/oauth2": "^9.21.0",
-    "magic-sdk": "^28.21.1",
     "sade": "^1.8.1"
   }
 }
