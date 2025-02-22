@@ -12,16 +12,35 @@ const server = http.createServer(async (req, res) => {
       res.statusCode = 400
       return res.end()
     }
+
     const params = new FormData()
     params.set('client_id', GITHUB_CLIENT_ID)
     params.set('client_secret', GITHUB_CLIENT_SECRET)
     params.set('code', code)
-    const res = await fetch('https://github.com/login/oauth/access_token', {
+
+    const accessTokenRes = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
       headers: { Accept: 'application/json' },
       body: params
     })
-    console.log(await res.json())
+    if (!accessTokenRes.ok) {
+      res.statusCode = 400
+      return res.end()
+    }
+    const { access_token: accessToken } = await res.json()
+
+    const userRes = await fetch('https://api.github.com/user', {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${accessToken}`,
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    })
+    if (!userRes.ok) {
+      res.statusCode = 500
+      return res.end()
+    }
+    console.log(await userRes.json())
   }
   res.end()
 })
