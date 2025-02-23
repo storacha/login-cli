@@ -1,5 +1,7 @@
 import http from 'node:http'
+import { base64url } from 'multiformats/bases/base64'
 import * as DID from '@ipld/dag-ucan/did'
+import { Delegation } from '@ucanto/core'
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
@@ -14,8 +16,13 @@ const server = http.createServer(async (req, res) => {
       return res.end()
     }
 
-    const agent = DID.parse(url.searchParams.get('state')).did()
-    console.log(`Agent: ${agent}`)
+    const extract = await Delegation.extract(base64url.decode(url.searchParams.get('state')))
+    if (extract.error) {
+      res.statusCode = 400
+      return res.end()
+    }
+
+    console.log(`access/authorize delegation: ${extract.ok.toJSON()}`)
 
     const params = new FormData()
     params.set('client_id', GITHUB_CLIENT_ID)
@@ -58,6 +65,7 @@ const server = http.createServer(async (req, res) => {
       return res.end()
     }
     console.log(await userEmailsRes.json())
+    // TODO: use primary and verified email
   }
   res.end()
 })
