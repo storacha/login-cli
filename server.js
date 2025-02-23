@@ -1,6 +1,6 @@
 import http from 'node:http'
+import { inspect } from 'node:util'
 import { base64url } from 'multiformats/bases/base64'
-import * as DID from '@ipld/dag-ucan/did'
 import { Delegation } from '@ucanto/core'
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
@@ -22,7 +22,7 @@ const server = http.createServer(async (req, res) => {
       return res.end()
     }
 
-    console.log(`access/authorize delegation: ${extract.ok.toJSON()}`)
+    console.log('access/authorize delegation:', inspect(extract.ok.toJSON()))
 
     const params = new FormData()
     params.set('client_id', GITHUB_CLIENT_ID)
